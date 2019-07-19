@@ -151,12 +151,16 @@ Fetches the user global data (data across all the reserves)
 
 #### GET
  
+ 
+ ##### Reserves
  ```
  
  /data/reserves
  
  ``` 
- returns: 
+ Fetches the data of all the reserves.
+ 
+ returns an array of:
  
  ```
  {
@@ -175,34 +179,145 @@ Fetches the user global data (data across all the reserves)
 }
 ``` 
 
+##### User
+
 ```
-/user/:userAddress
+/data/user/:userAddress
 
 ```
 returns:
 
+```
+{
+    totalLiquidityBalanceETH //total deposits of the user, in ETH
+    totalBorrowBalanceETH	//total borrowed by the user, in ETH
+    totalLiquidityBalanceUSD	//total deposits in USD
+    totalBorrowBalanceUSD	//total borrowed in USD
+    ltv	"105" //current average loan to value calculated on the deposited collaterals
+    liquidationRatio //current average liquidation ratio calculated on the deposited collaterals
 
+    reservesData[] {	//details for all the reserves where the user borrowed/deposited something. Note: example values below
+        currentLiquidityBalance	
+        currentBorrowBalance	"6443.541666666666665"
+        currentLiquidityBalanceETH	"0"
+        currentBorrowBalanceETH	"23.781076961139458327182193119"
+        currentLiquidityBalanceUSD	"0"
+        currentBorrowBalanceUSD	"5945.26924028486458179554827975"
+        principalBorrowBalance	"2500"
+        principalLiquidityBalance	"0"
+        borrowRateMode	"Fixed"
+        borrowRate	"20.00"
+        liquidityRate	"8.83"
+        symbol	"DAI"
+        name	"DAI"
+        address	"0xb38d62af93F66976b9AbB4348CfB7E7187301FE1"
+    }
+}
+```
 
-router.get('/user/walletbalances/:userAddress', async (req: Request, resp: Response) => {
-  const tokenService = new TokenService();
-  const controllerService = new LendingPoolControllerService();
+#### POST
 
-  const reserves = await controllerService.getReservesData();
-  const userData = await tokenService.getUserWalletBalances(req.params.userAddress, reserves);
+All the post actions that can be executed return a transaction object with the following interface:
 
-  return resp.status(200).send(userData);
-});
+```
+interface EthereumTransactionModelI {
+  from: string;
+  to: string;
+  data?: string;
+  gas?: string;
+  value?: string;
+}
+```
 
-router.get('/reserve/isapproved/:reserveAddress/:userAddress', async (req: Request, resp: Response) => {
-  const service = new TokenService();
-  const configuration = getConfiguration();
+The transaction object received can be then signed and submitted by the caller.
 
-  const userData = await service.isApproved(
-    req.params.reserveAddress,
-    req.params.userAddress,
-    configuration.addresses.LENDINGPOOL_CONTROLLER_ADDRESS,
-  );
-  return resp.status(200).send(userData);
-});
- 
+```
+/actions/borrow
+```
+payload for the action is:
+
+```
+{
+    userAddress, //address of the caller
+    reserve, //address of the reserve
+    amount, //amount in currency units
+    interestRateMode //interest rate mode, can be 0 (fixed) or 1 (variable)
+ }
+```
+
+```
+/actions/deposit
+
+```
+payload for the action is:
+
+```
+{
+    userAddress, //address of the caller
+    reserve, //address of the reserve
+    amount, //amount in currency units
+ }
+
+```
+
+```
+/actions/withdraw
+
+```
+payload for the action is:
+
+```
+{
+    userAddress, //address of the caller
+    reserve, //address of the reserve
+    amount, //amount in currency units
+ }
+
+```
+
+```
+/actions/swapratemode
+
+```
+payload for the action is:
+
+```
+{
+    userAddress, //address of the caller
+    reserve, //address of the reserve
+}
+
+```
+
+```
+/actions/collateralcall
+
+```
+payload for the action is:
+
+```
+{
+    userAddress, //address of the caller
+    reserve, //address of the reserve
+    collateral, //address of the collateral to call
+    amount //amount of the principal to buy the collateral
+}
+
+```
+
+```
+/actions/approve
+
+```
+Authorizes the protocol to transfer tokens from the user wallet.
+
+payload for the action is:
+
+```
+{
+    userAddress, //address of the caller
+    reserve, //address of the reserve
+}
+
+```
  
