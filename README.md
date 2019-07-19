@@ -39,7 +39,7 @@ The smart contracts are currently live on the Kovan testnet. A list of the invol
 
 ### ABI Details
 
-The LendingPool smart contract is the primary access to the protocol. Here is a list of functions that are available currently available. Note during the testnet period, these interfaces will likely change.
+The LendingPool smart contract is the primary access to the protocol. Here is a list of the functions currently available. Note during the testnet period, these interfaces will likely change.
 
 
 #### Actions
@@ -70,8 +70,6 @@ InterestRateMode is defined with the following Enumerative:
         VARIABLE
     }
 ```
-
-
 
 Allows to borrow the specified asset with the specified amount and the specified interest rate mode, as long as the caller previously deposited enough collateral to cover the borrowing.
 
