@@ -141,11 +141,68 @@ Fetches the user global data (data across all the reserves)
  
  Fetches the user data for a specific reserve.
  
+
+### REST API
  
- ### REST API
+ A set of REST API has been developed to support the integration of the protocol. These endpoints allow to fetch the data from the smart contracts in a easy way and automatically generate the transactions to perform actions. The endpoints are available at the following address: https://dlp-api-dev.testing.aave.com/.
  
- A set of REST API has been developed to support the integration of the protocol. These endpoints allow to fetch the data from the smart contracts in a easy way and automatically generate the transactions to perform actions. Here is a list of the endpoints:
+ Here is a list of the endpoints:
  
+
+#### GET
  
+ ```
+ 
+ /data/reserves
+ 
+ ``` 
+ returns: 
+ 
+ ```
+ {
+    address	//address of the reserve
+    name	//name of the reserve
+    symbol	//symbol of the reserve
+    totalLiquidity	//total liquidity in currency units
+    availableLiquidity	//available liquidity in currency units
+    totalBorrows	//total borrowed in currency units
+    totalBorrowsFixed //total fixed in currency units
+    totalBorrowsVariable //total variable in currency units
+    liquidityRate //current liquidity interest (in percentage)
+    variableBorrowRate	//current variable borrow rate (in percentage)
+    fixedBorrowRate	//current fixed borrow rate (in percentage)
+    utilizationRate	//current utilization rate
+}
+``` 
+
+```
+/user/:userAddress
+
+```
+returns:
+
+
+
+router.get('/user/walletbalances/:userAddress', async (req: Request, resp: Response) => {
+  const tokenService = new TokenService();
+  const controllerService = new LendingPoolControllerService();
+
+  const reserves = await controllerService.getReservesData();
+  const userData = await tokenService.getUserWalletBalances(req.params.userAddress, reserves);
+
+  return resp.status(200).send(userData);
+});
+
+router.get('/reserve/isapproved/:reserveAddress/:userAddress', async (req: Request, resp: Response) => {
+  const service = new TokenService();
+  const configuration = getConfiguration();
+
+  const userData = await service.isApproved(
+    req.params.reserveAddress,
+    req.params.userAddress,
+    configuration.addresses.LENDINGPOOL_CONTROLLER_ADDRESS,
+  );
+  return resp.status(200).send(userData);
+});
  
  
