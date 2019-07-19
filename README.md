@@ -4,7 +4,7 @@ This is the initial version of the Decentralized Lending Pool (DLP) protocol doc
 
 ### Smart contract structure
 
-
+![Alt text](https://raw.githubusercontent.com/aave/dlp-docs-abi/master/images/dlp-diagram.png)
 
 
 ### Testnet release
