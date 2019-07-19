@@ -5,7 +5,6 @@ This is the initial version of the Decentralized Lending Pool (DLP) protocol doc
 ### Smart contract structure
 
 
-[TBD]
 
 
 ### Testnet release
