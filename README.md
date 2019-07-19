@@ -29,6 +29,7 @@ The smart contracts are currently live on the Kovan testnet. A list of the invol
 
 ### Market Rate Oracle
 
+0xD63239eB2DAF309169dFc2F8B07DdE8405b4d3Cc
 
 
 *** NOTE *** Current testnet uses a mock version of the Aave Price Oracle, where prices are currently submitted manually. The Aave price oracle is currently being tested separately and will be integrated accordingly.
